@@ -883,7 +883,7 @@ func (n *Constraint) Restore(ctx *format.RestoreCtx) error {
 		ctx.WriteName(n.Name)
 	}
 
-	ctx.WritePlain("(")
+	ctx.WritePlain(" (")
 	for i, keys := range n.Keys {
 		if i > 0 {
 			ctx.WritePlain(", ")
@@ -1074,9 +1074,19 @@ func (n *CreateTableStmt) Restore(ctx *format.RestoreCtx) error {
 	lenConstraints := len(n.Constraints)
 	if lenCols+lenConstraints > 0 {
 		ctx.WritePlain(" (")
+		if ctx.Flags.HasPrettyFormatFlag() {
+			ctx.WritePlain("\n")
+		}
+
 		for i, col := range n.Cols {
 			if i > 0 {
 				ctx.WritePlain(",")
+				if ctx.Flags.HasPrettyFormatFlag() {
+					ctx.WritePlain("\n")
+				}
+			}
+			if ctx.Flags.HasPrettyFormatFlag() {
+				ctx.WritePlain("  ")
 			}
 			if err := col.Restore(ctx); err != nil {
 				return errors.Annotatef(err, "An error occurred while splicing CreateTableStmt ColumnDef: [%v]", i)
@@ -1085,10 +1095,19 @@ func (n *CreateTableStmt) Restore(ctx *format.RestoreCtx) error {
 		for i, constraint := range n.Constraints {
 			if i > 0 || lenCols >= 1 {
 				ctx.WritePlain(",")
+				if ctx.Flags.HasPrettyFormatFlag() {
+					ctx.WritePlain("\n")
+				}
+			}
+			if ctx.Flags.HasPrettyFormatFlag() {
+				ctx.WritePlain("  ")
 			}
 			if err := constraint.Restore(ctx); err != nil {
 				return errors.Annotatef(err, "An error occurred while splicing CreateTableStmt Constraints: [%v]", i)
 			}
+		}
+		if ctx.Flags.HasPrettyFormatFlag() {
+			ctx.WritePlain("\n")
 		}
 		ctx.WritePlain(")")
 	}

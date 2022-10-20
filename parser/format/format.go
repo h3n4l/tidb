@@ -235,6 +235,9 @@ const (
 
 	RestoreTiDBSpecialComment
 	SkipPlacementRuleForRestore
+
+	// RestorePrettyFormat is used to pretty print the CREATE TABLE statement and CREATE VIEW statement.
+	RestorePrettyFormat
 )
 
 const (
@@ -319,6 +322,10 @@ func (rf RestoreFlags) HasTiDBSpecialCommentFlag() bool {
 // HasSkipPlacementRuleForRestoreFlag returns a boolean indicating whether `rf` has `SkipPlacementRuleForRestore` flag.
 func (rf RestoreFlags) HasSkipPlacementRuleForRestoreFlag() bool {
 	return rf.has(SkipPlacementRuleForRestore)
+}
+
+func (rf RestoreFlags) HasPrettyFormatFlag() bool {
+	return rf.has(RestorePrettyFormat)
 }
 
 // RestoreCtx is `Restore` context to hold flags and writer.
