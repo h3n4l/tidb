@@ -1468,6 +1468,9 @@ func (n *CreateViewStmt) Restore(ctx *format.RestoreCtx) error {
 		} else {
 			ctx.WritePlain(",")
 		}
+		if ctx.Flags.HasPrettyFormatFlag() {
+			ctx.WritePlain("\n")
+		}
 		ctx.WriteName(col.O)
 		if i == len(n.Cols)-1 {
 			ctx.WritePlain(")")
